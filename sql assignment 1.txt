@@ -1,0 +1,209 @@
+--1.Find the total, average, minimum, and maximum credit limit of all customers.
+--SELECT 
+--     SUM(credit_limit) AS total_credit_limit,
+--     AVG(credit_limit) AS average_credit_limit,
+--     MIN(credit_limit) AS minimum_credit_limit,
+--     MAX(credit_limit) AS maximum_credit_limit
+-- FROM customers;
+
+
+--2.Count the number of customers in each income level.
+-- SELECT 
+--     income_level,
+--     COUNT(*) AS number_of_customers
+-- FROM customers
+-- GROUP BY income_level
+-- ORDER BY income_level;
+
+
+--3.Show total credit limit by state and country.
+-- SELECT 
+--     CUST_STATE_PROVINCE,
+--     COUNTRY_ID,
+--     SUM(CUST_CREDIT_LIMIT) AS total_credit_limit
+-- FROM SH.CUSTOMERS
+-- GROUP BY 
+--     CUST_STATE_PROVINCE, 
+--     COUNTRY_ID
+
+
+--4.Display average credit limit for each marital status and gender combination.
+-- SELECT 
+--     CUST_MARITAL_STATUS,
+--     CUST_GENDER,
+--     ROUND(AVG(CUST_CREDIT_LIMIT), 2) AS avg_credit_limit
+-- FROM SH.CUSTOMERS
+-- GROUP BY 
+--     CUST_MARITAL_STATUS, 
+--     CUST_GENDER
+
+
+--5.Find the top 3 states with the highest average credit limit.
+-- SELECT 
+--     CUST_STATE_PROVINCE,
+--     ROUND(AVG(CUST_CREDIT_LIMIT), 2) AS avg_credit_limit
+-- FROM SH.CUSTOMERS
+-- GROUP BY CUST_STATE_PROVINCE
+-- ORDER BY avg_credit_limit DESC
+-- FETCH FIRST 3 ROWS ONLY;
+
+
+--6.Find the country with the maximum total customer credit limit.
+-- SELECT 
+--     COUNTRY_ID,
+--     SUM(CUST_CREDIT_LIMIT) AS total_credit_limit
+-- FROM SH.CUSTOMERS
+-- GROUP BY COUNTRY_ID
+-- ORDER BY total_credit_limit DESC
+-- FETCH FIRST 1 ROW ONLY;
+
+
+-- -- 7.Show the number of customers whose credit limit exceeds their state average.
+-- SELECT 
+--     COUNT(*) AS num_customers_above_avg
+-- FROM SH.CUSTOMERS c
+-- WHERE CUST_CREDIT_LIMIT > (
+--     SELECT AVG(c2.CUST_CREDIT_LIMIT)
+--     FROM SH.CUSTOMERS c2
+--     WHERE c2.CUST_STATE_PROVINCE = c.CUST_STATE_PROVINCE
+-- );
+
+
+-- -- 8.Calculate total and average credit limit for customers born after 1980.
+-- SELECT 
+--     SUM(CUST_CREDIT_LIMIT) AS total_credit_limit,
+--     AVG(CUST_CREDIT_LIMIT) AS average_credit_limit
+-- FROM SH.CUSTOMERS
+-- WHERE CUST_YEAR_OF_BIRTH > 1980;
+
+
+-- -- 9.Find states having more than 50 customers.
+-- SELECT 
+--     CUST_STATE_PROVINCE,
+--     COUNT(*) AS numbers_of_customers
+-- FROM SH.CUSTOMERS
+-- GROUP BY CUST_STATE_PROVINCE
+-- HAVING COUNT(*) > 50
+-- ORDER BY numbers_of_customers DESC;
+
+
+-- -- 10.List countries where the average credit limit is higher than the global average
+-- SELECT 
+--     COUNTRY_ID,
+--     AVG(CUST_CREDIT_LIMIT) AS avg_credit_limit
+-- FROM SH.CUSTOMERS
+-- GROUP BY COUNTRY_ID
+-- HAVING AVG(CUST_CREDIT_LIMIT) > (
+--     SELECT AVG(CUST_CREDIT_LIMIT) FROM SH.CUSTOMERS
+-- )
+-- ORDER BY avg_credit_limit DESC;
+
+
+-- 11.Calculate the variance and standard deviation of customer credit limits by country.
+
+-- SELECT 
+--     COUNTRY_ID,
+--     VARIANCE(CUST_CREDIT_LIMIT)as variance_of_credit_limit,
+--     STDDEV(CUST_CREDIT_LIMIT) as standard_devation_credit_limit
+-- FROM SH.CUSTOMERS
+-- GROUP BY COUNTRY_ID
+
+
+--12.Find the state with the smallest range (max–min) in credit limits.
+
+-- SELECT 
+--     CUST_STATE_PROVINCE,
+--     Max(CUST_CREDIT_LIMIT) as maximum_credit_limit,
+--     MIN(CUST_CREDIT_LIMIT) as minimum_credit_limit,
+--     (MAX(CUST_CREDIT_LIMIT) - MIN(CUST_CREDIT_LIMIT)) AS range_credit_limit
+
+-- FROM SH.CUSTOMERS
+-- GROUP BY CUST_STATE_PROVINCE
+-- ORDER BY range_credit_limit
+-- FETCH FIRST 1 ROWS  ONLY
+
+
+--13.Show the total number of customers per income level and the percentage contribution of each.
+
+-- SELECT 
+--     CUST_INCOME_LEVEL,
+--     COUNT(*) as total_num_of_customers,
+--     ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (),2) as percentage_contribution
+-- FROM sh.CUSTOMERS
+-- GROUP BY CUST_INCOME_LEVEL
+-- ORDER BY total_num_of_customers DESC 
+
+
+-- 14.For each income level, find how many customers have NULL credit limits.
+-- SELECT
+--     CUST_INCOME_LEVEL,
+--     COUNT(*) AS number_of_customers
+-- FROM SH.CUSTOMERS
+-- WHERE CUST_CREDIT_LIMIT IS NULL
+-- GROUP BY CUST_INCOME_LEVEL
+
+
+-- 15.Display countries where the sum of credit limits exceeds 10 million.
+-- SELECT
+--     COUNTRY_ID,
+--     SUM(CUST_CREDIT_LIMIT) as total_credit_limit
+-- FROM SH.CUSTOMERS
+-- GROUP BY COUNTRY_ID
+-- HAVING SUM(CUST_CREDIT_LIMIT) >10000000
+
+
+-- 16.Find the state that contributes the highest total credit limit to its country.
+
+-- SELECT
+--     CUST_STATE_PROVINCE,
+--     COUNTRY_ID,
+--     SUM(CUST_CREDIT_LIMIT) as total_credit_limit
+-- FROM SH.CUSTOMERS
+-- GROUP BY CUST_STATE_PROVINCE,COUNTRY_ID
+-- ORDER BY total_credit_limit DESC
+-- FETCH FIRST 1 ROWS ONLY 
+
+
+-- 17.Show total credit limit per year of birth, sorted by total descending.
+-- SELECT
+--     CUST_YEAR_OF_BIRTH,
+--     SUM(CUST_CREDIT_LIMIT) as total_credit_limit
+-- FROM SH.CUSTOMERS
+-- GROUP BY CUST_YEAR_OF_BIRTH
+-- ORDER BY total_credit_limit DESC;
+
+
+-- 18.Identify customers who hold the maximum credit limit in their respective country.
+-- SELECT
+--     COUNTRY_ID,
+--     CUST_FIRST_NAME,
+--     CUST_LAST_NAME,
+--     CUST_CREDIT_LIMIT
+-- FROM SH.CUSTOMERS c
+-- WHERE CUST_CREDIT_LIMIT = (
+--     SELECT MAX(CUST_CREDIT_LIMIT)
+--     FROM SH.CUSTOMERS
+--     WHERE COUNTRY_ID = c.COUNTRY_ID
+-- )
+-- ORDER BY COUNTRY_ID
+
+
+--19.Show the difference between maximum and average credit limit per country.
+-- SELECT
+--     COUNTRY_ID,
+--     MAX(CUST_CREDIT_LIMIT) AS max_credit_limit,
+--     AVG(CUST_CREDIT_LIMIT) AS avg_credit_limit,
+--     MAX(CUST_CREDIT_LIMIT) - AVG(CUST_CREDIT_LIMIT) AS difference
+-- FROM SH.CUSTOMERS
+-- GROUP BY COUNTRY_ID
+-- ORDER BY difference DESC
+
+
+--20.Display the overall rank of each state based on its total credit limit (using GROUP BY + analytic rank).
+-- SELECT
+--     CUST_STATE_PROVINCE,
+--     SUM(CUST_CREDIT_LIMIT) AS total_credit_limit,
+--     rank() OVER(ORDER BY SUM(CUST_CREDIT_LIMIT) DESC) as state_rank
+-- FROM SH.CUSTOMERS
+-- GROUP BY CUST_STATE_PROVINCE
+-- ORDER BY state_rank
